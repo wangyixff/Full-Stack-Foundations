@@ -1,4 +1,4 @@
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import cgi
 
 
@@ -15,7 +15,7 @@ class webServerHandler(BaseHTTPRequestHandler):
                 output += "<h1>Hello!</h1>"
                 output += '''<form method='POST' enctype='multipart/form-data' action='/hello'><h2>What would you like me to say?</h2><input name="message" type="text" ><input type="submit" value="Submit"> </form>'''
                 output += "</body></html>"
-                self.wfile.write(output)
+                self.wfile.write(output.encode())
                 print output
                 return
 
@@ -28,7 +28,7 @@ class webServerHandler(BaseHTTPRequestHandler):
                 output += "<h1>&#161 Hola !</h1>"
                 output += '''<form method='POST' enctype='multipart/form-data' action='/hello'><h2>What would you like me to say?</h2><input name="message" type="text" ><input type="submit" value="Submit"> </form>'''
                 output += "</body></html>"
-                self.wfile.write(output)
+                self.wfile.write(output.encode())
                 print output
                 return
 
@@ -40,8 +40,12 @@ class webServerHandler(BaseHTTPRequestHandler):
             self.send_response(301)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
+            # HEADERS are now in dict/json style container
             ctype, pdict = cgi.parse_header(
-                self.headers.getheader('content-type'))
+                self.headers['content-type'])
+
+            # boundary data needs to be encoded in a binary format
+            pdict['boundary'] = bytes(pdict['boundary'], "utf-8")
             if ctype == 'multipart/form-data':
                 fields = cgi.parse_multipart(self.rfile, pdict)
                 messagecontent = fields.get('message')
