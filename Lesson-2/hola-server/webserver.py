@@ -1,4 +1,4 @@
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
 class webServerHandler(BaseHTTPRequestHandler):
@@ -11,7 +11,7 @@ class webServerHandler(BaseHTTPRequestHandler):
             message = ""
             message += "<html><body>Hello!</body></html>"
             self.wfile.write(message)
-            print message
+            print(message)
             return
 
         if self.path.endswith("/hola"):
@@ -19,9 +19,9 @@ class webServerHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             message = ""
-            message += "<html><body> &#161 Hola ! </body></html>"
+            message += "<html><body> &#161 Hola ! <a href = '/hello'>Back to Hello </a> </body></html>"
             self.wfile.write(message)
-            print message
+            print(message)
             return
 
         else:
