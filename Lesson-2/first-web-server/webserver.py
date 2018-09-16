@@ -1,4 +1,4 @@
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
 class WebServerHandler(BaseHTTPRequestHandler):
@@ -10,7 +10,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
             self.end_headers()
             message = ""
             message += "<html><body>Hello!</body></html>"
-            self.wfile.write(message)
+            self.wfile.write(message.encode())
             print message
             return
         else:
