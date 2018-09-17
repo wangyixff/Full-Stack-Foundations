@@ -1,8 +1,9 @@
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-import cgi
-
+#!/usr/bin/env python3
+# different imports
+from http.server import HTTPServer, BaseHTTPRequestHandler
 # import CRUD Operations from Lesson 1
 from database_setup import Base, Restaurant, MenuItem
+import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -12,8 +13,14 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-
-class webServerHandler(BaseHTTPRequestHandler):
+class WebServerHandler(BaseHTTPRequestHandler):
+    form_html = \
+        '''
+        <form method='POST' enctype='multipart/form-data' action='/hello'>
+        <h2>What would you like me to say?</h2>
+        <input name="message" type="text"><input type="submit" value="Submit" >
+        </form>
+         '''
 
     def do_GET(self):
         try:
@@ -23,18 +30,18 @@ class webServerHandler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
+
                 output += "<html><body>"
                 for restaurant in restaurants:
                     output += restaurant.name
                     output += "</br></br></br>"
 
                 output += "</body></html>"
-                self.wfile.write(output)
+                self.wfile.write(output.encode())
                 return
+
         except IOError:
-            self.send_error(404, 'File Not Found: %s' % self.path)
-
-
+            self.send_error(404, "File Not Found {}".format(self.path))
 def main():
     try:
         server = HTTPServer(('', 8080), webServerHandler)
