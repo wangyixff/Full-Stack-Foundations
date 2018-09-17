@@ -14,14 +14,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 class WebServerHandler(BaseHTTPRequestHandler):
-    form_html = \
-        '''
-        <form method='POST' enctype='multipart/form-data' action='/hello'>
-        <h2>What would you like me to say?</h2>
-        <input name="message" type="text"><input type="submit" value="Submit" >
-        </form>
-         '''
-
+  
     def do_GET(self):
         try:
             if self.path.endswith("/restaurants"):
